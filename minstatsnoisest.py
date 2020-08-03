@@ -28,7 +28,7 @@ class NoiseEstimator:
         x = sum(self.__prev_psd_est) / sum(abs(lin_fft) ** 2) - 1
         #         print("x is: {}".format(x))
         corfac_term = 0.3 * max(1 / (1 + x ** 2), 0.7) # compute correction factor for alpha
-        b_corfac = 1 + 2.12*np.sqrt(avg_norm)
+        b_corfac = 1 + 2.12 * np.sqrt(avg_norm)
         # in each frame
         for n in range(len(lin_fft)):
             # compute optimum psd estimate factor with previous estimated noise sample
@@ -54,19 +54,18 @@ class NoiseEstimator:
             bias = 1 + bias
             # append psd estimated samples for a frame
             if n == 0:  # for the first sample in a frame
-                noise_range = 10 * np.log10(
-                    b_corfac * bias * self.__prev_psd_est[len(lin_fft) - win_min - 1:])  # get win_len - 1 previous samples
+                noise_range = self.__prev_noise_est[len(lin_fft) - win_min - 1:]  # get win_len - 1 previous samples
 
             noise_range = np.append(noise_range, 10 * np.log10(b_corfac * bias * self.__last_psd_est))
             # db constraints between 0.8-5dB
             if avg_norm < 0.03:
-                noise_slope_max = 5
+                noise_slope_max = 9.03
             elif avg_norm < 0.05:
-                noise_slope_max = 4
+                noise_slope_max = 6.02
             elif avg_norm < 0.06:
-                noise_slope_max = 3
+                noise_slope_max = 3.01
             else:
-                noise_slope_max = 0.2
+                noise_slope_max = 0.8
             # slide through 3 of 8 samples
             min_stats = min(noise_range[n:n + win_min])
             self.__noise_est = min_stats + noise_slope_max
