@@ -47,7 +47,7 @@ class NoiseEstimator:
             eq_deg = 10 * np.log10(0.5 * est_var) - self.__noise_est
             eq_deg = min(10 ** (eq_deg / 10), 0.5)  # should be greater than or equal to two
             # find minimum sample in 3 of 8 samples
-            win_min = 7 * len(lin_fft) // 8
+            win_min = 3 * len(lin_fft) // 8
             # computing inverse bias
             eq_deg_tilda = (1 / eq_deg - 2 * 0.91) / (1 - 0.91)
             bias = (win_min - 1) * 2 / abs(eq_deg_tilda)
